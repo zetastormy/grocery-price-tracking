@@ -1,0 +1,48 @@
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
+import time
+import csv
+from datetime import datetime
+
+search_file = open("search_list.txt", "r", encoding="utf-8")
+arguments = ["--headless=new", "--no-sandbox", "--disable-dev-shm-usage", "--disable-renderer-backgrounding", "--disable-background-timer-throttling",
+            "--disable-backgrounding-occluded-windows", "--disable-client-side-phishing-detection", "--disable-crash-reporter", "--disable-oopr-debug-crash-dump",
+            "--no-crash-upload", "--disable-gpu", "--disable-extensions", "--disable-low-res-tiling", "--log-level=3", "--silent"]
+current_date = datetime.now().strftime("%d-%m-%Y")
+
+with open(f"results/{current_date}.csv", "w", newline = "", encoding = "utf-8") as csvfile:
+    writer = csv.writer(csvfile)
+    writer.writerow(["search", "found", "price", "pre_discount"])
+
+    options = Options()
+    for argument in arguments: options.add_argument(argument)
+    driver = webdriver.Chrome(options = options)
+
+    for search in search_file:
+        search = search.strip()
+        driver.get("https://super.eltit.cl/search?q=" + search)
+
+        ul_productos = driver.find_element(By.CSS_SELECTOR, 'ul.products')
+        productos_li = ul_productos.find_elements(By.TAG_NAME, 'li')
+
+        for producto in productos_li:
+            nombre = producto.find_element(By.CSS_SELECTOR, "h3.product-name").text
+            precio_antes = producto.find_element(By.CLASS_NAME, "bootic-price-comparison").text.replace('$', '').replace('.', '').split('\n')[0]
+            precio_actual = producto.find_element(By.CLASS_NAME, "bootic-price").text.replace('$', '').replace('.', '').split('\n')[0]
+
+            if (precio_antes == ""): precio_antes = precio_actual
+
+            print(f"Búsqueda: {search}")
+            print(f"Encontrado: {nombre}")
+            print(f"Precio anterior: {precio_antes}")
+            print(f"Precio actual: {precio_actual}\n")
+
+            writer.writerow([search, nombre, precio_actual, precio_antes])
+       
+        time.sleep(3)
+
+    driver.quit()
+
+search_file.close()
+
