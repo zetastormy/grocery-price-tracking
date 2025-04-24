@@ -135,12 +135,12 @@ def get_best_match(row, target_df, threshold=68):
 
 actual = datetime.now().strftime("%d-%m-%Y")
 
-df_acuenta = pd.read_csv(f"../acuenta/results/{actual}.csv")
-df_eltit = pd.read_csv(f"../eltit/results/{actual}.csv")
-df_eltrebol = pd.read_csv(f"../eltrebol/results/{actual}.csv")
-df_jumbo = pd.read_csv(f"../jumbo/results/{actual}.csv")
-df_santaisabel = pd.read_csv(f"../santaisabel/results/{actual}.csv")
-df_unimarc = pd.read_csv(f"../unimarc/results/{actual}.csv")
+df_acuenta = pd.read_csv(f"../../scrappers/acuenta/results/{actual}.csv")
+df_eltit = pd.read_csv(f"../../scrappers/eltit/results/{actual}.csv")
+df_eltrebol = pd.read_csv(f"../../scrappers/eltrebol/results/{actual}.csv")
+df_jumbo = pd.read_csv(f"../../scrappers/jumbo/results/{actual}.csv")
+df_santaisabel = pd.read_csv(f"../../scrappers/santaisabel/results/{actual}.csv")
+df_unimarc = pd.read_csv(f"../../scrappers/unimarc/results/{actual}.csv")
 
 supermercados = {
     "acuenta": df_acuenta,
