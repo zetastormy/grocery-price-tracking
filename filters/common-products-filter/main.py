@@ -191,17 +191,17 @@ for idx, row in max_df.iterrows():
         "jumbo": matched_products["jumbo"][0],
         "santaisabel": matched_products["santaisabel"][0],
         "unimarc": matched_products["unimarc"][0],
-        "precio_acuenta": matched_products["acuenta"][1],
+        "price_acuenta": matched_products["acuenta"][1],
         "pre_discount_acuenta": matched_products["acuenta"][2],
-        "precio_eltit": matched_products["eltit"][1],
+        "price_eltit": matched_products["eltit"][1],
         "pre_discount_eltit": matched_products["eltit"][2],
-        "precio_eltrebol": matched_products["eltrebol"][1],
+        "price_eltrebol": matched_products["eltrebol"][1],
         "pre_discount_eltrebol": matched_products["eltrebol"][2],
-        "precio_jumbo": matched_products["jumbo"][1],
+        "price_jumbo": matched_products["jumbo"][1],
         "pre_discount_jumbo": matched_products["jumbo"][2],
-        "precio_santaisabel": matched_products["santaisabel"][1],
+        "price_santaisabel": matched_products["santaisabel"][1],
         "pre_discount_santaisabel": matched_products["santaisabel"][2],
-        "precio_unimarc": matched_products["unimarc"][1],
+        "price_unimarc": matched_products["unimarc"][1],
         "pre_discount_unimarc": matched_products["unimarc"][2]
     })
 
