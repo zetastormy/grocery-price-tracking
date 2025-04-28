@@ -1,5 +1,4 @@
 import pandas as pd
-import matplotlib.pyplot as plt
 from pathlib import Path
 from datetime import datetime
 
@@ -43,4 +42,22 @@ for name, sp_data in supermarkets.items():
     sp_data[1].append(averages)
     sp_data[2].append(amounts)
 
-print(f"\nVolumen de datos: {total_product_amount}")
+print(f"\nVolumen de datos: {total_product_amount}\n")
+
+print("---------------------------------")
+print(f"Datos filtrados:")
+print("---------------------------------")
+
+total_product_amount_filtered = 0
+
+for child in Path(f'./filters/common-products-filter/results/').iterdir():
+    data = pd.read_csv(child)
+    date = datetime.strptime(child.name.replace(".csv", ""), "%d-%m-%Y").date()
+    data_amount = len(data["search"])
+
+    print(f"- {date}:")
+    print(f"    - Productos en común: {data_amount}")
+
+    total_product_amount_filtered += data_amount
+
+print(f"\nVolumen de datos filtrado: {total_product_amount_filtered}")
