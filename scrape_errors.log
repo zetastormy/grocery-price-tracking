@@ -1,0 +1,14 @@
+[2025-05-08 18:16:59] Error en eltit_scrapper.py (duración: 0s)
+Traceback (most recent call last):
+  File "/home/zetastormy/Development/Python/V semestre/grocery-price-tracking/scrappers/eltit/eltit_scrapper.py", line 10, in <module>
+    result_path = os.path.join(BASE_DIR, f"results/{actual}.csv")
+                                                    ^^^^^^
+NameError: name 'actual' is not defined
+----------------------------------------
+[2025-05-08 18:17:00] Error en eltrebol_scrapper.py (duración: 1s)
+Traceback (most recent call last):
+  File "/home/zetastormy/Development/Python/V semestre/grocery-price-tracking/scrappers/eltrebol/eltrebol_scrapper.py", line 10, in <module>
+    result_path = os.path.join(BASE_DIR, f"results/{actual}.csv")
+                                                    ^^^^^^
+NameError: name 'actual' is not defined
+----------------------------------------

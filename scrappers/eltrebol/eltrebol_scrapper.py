@@ -7,6 +7,7 @@ from datetime import datetime
 import os
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+actual = datetime.now().strftime("%d-%m-%Y")
 result_path = os.path.join(BASE_DIR, f"results/{actual}.csv")
 search_file_path = os.path.join(BASE_DIR, "search_list.txt")
 search_file = open(search_file_path, "r", encoding="utf-8")
