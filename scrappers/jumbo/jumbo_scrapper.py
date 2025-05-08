@@ -4,6 +4,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
 from datetime import datetime
+import os
 import csv
 
 # Configurar el navegador
@@ -16,10 +17,12 @@ driver = webdriver.Chrome(options=options)
 
 # Archivo donde se guardarán los resultados
 actual = datetime.now().strftime("%d-%m-%Y")
-archivo_salida = f"results/{actual}.csv"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+archivo_salida = os.path.join(BASE_DIR, f"results/{actual}.csv")
+search_file_path = os.path.join(BASE_DIR, "search_list.txt")
 
 with open(archivo_salida, "w", encoding="utf-8") as archivo:
-    with open("search_list.txt", "r", encoding="utf-8") as lista:
+    with open(search_file_path, "r", encoding="utf-8") as lista:
         writer = csv.writer(archivo)
         writer.writerow(["search","found", "price", "pre_discount"])
         for linea in lista:

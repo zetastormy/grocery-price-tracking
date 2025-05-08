@@ -7,6 +7,7 @@ from datetime import datetime
 import time
 import random
 import csv
+import os
 
 # Configurar navegador en modo headless
 options = webdriver.ChromeOptions()
@@ -17,11 +18,12 @@ for argument in arguments: options.add_argument(argument)
 driver = webdriver.Chrome(options=options)
 
 actual = datetime.now().strftime("%d-%m-%Y")
-archivo_salida = f"results/{actual}.csv"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+archivo_salida = os.path.join(BASE_DIR, f"results/{actual}.csv")
+search_file_path = os.path.join(BASE_DIR, "search_list.txt")
 
-with open(archivo_salida, "w", encoding="utf-8") as salida:
-    # Leer productos desde lista.txt
-    with open("search_list.txt", "r", encoding="utf-8") as lista:
+with open(archivo_salida, "w", encoding="utf-8") as archivo:
+    with open(search_file_path, "r", encoding="utf-8") as lista:
         writer = csv.writer(salida)
         writer.writerow(["search","found", "price","pre_discount"])
         for linea in lista:

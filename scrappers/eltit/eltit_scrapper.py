@@ -4,14 +4,18 @@ from selenium.webdriver.chrome.options import Options
 import time
 import csv
 from datetime import datetime
+import os
 
-search_file = open("search_list.txt", "r", encoding="utf-8")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+result_path = os.path.join(BASE_DIR, f"results/{actual}.csv")
+search_file_path = os.path.join(BASE_DIR, "search_list.txt")
+search_file = open(search_file_path, "r", encoding="utf-8")
 arguments = ["--headless=new", "--no-sandbox", "--disable-dev-shm-usage", "--disable-renderer-backgrounding", "--disable-background-timer-throttling",
             "--disable-backgrounding-occluded-windows", "--disable-client-side-phishing-detection", "--disable-crash-reporter", "--disable-oopr-debug-crash-dump",
             "--no-crash-upload", "--disable-gpu", "--disable-extensions", "--disable-low-res-tiling", "--log-level=3", "--silent"]
 current_date = datetime.now().strftime("%d-%m-%Y")
 
-with open(f"results/{current_date}.csv", "w", newline = "", encoding = "utf-8") as csvfile:
+with open(result_path, "w", newline = "", encoding = "utf-8") as csvfile:
     writer = csv.writer(csvfile)
     writer.writerow(["search", "found", "price", "pre_discount"])
 
