@@ -2,7 +2,7 @@ import pandas as pd
 import re
 import numpy as np
 from rapidfuzz import fuzz, process
-from datetime import datetime
+from datetime import datetime, timedelta
 
 def normalize_text(text):
     """Normaliza los nombres de los productos"""
@@ -133,80 +133,86 @@ def get_best_match(row, target_df, threshold=68):
 
     return match_row["found"], match_score, match_idx
 
-actual = datetime.now().strftime("%d-%m-%Y")
+start_date = datetime.strptime("20-04-2025", "%d-%m-%Y")
+end_date = datetime.strptime("27-05-2025", "%d-%m-%Y")
 
-df_acuenta = pd.read_csv(f"../../scrappers/acuenta/results/{actual}.csv")
-df_eltit = pd.read_csv(f"../../scrappers/eltit/results/{actual}.csv")
-df_eltrebol = pd.read_csv(f"../../scrappers/eltrebol/results/{actual}.csv")
-df_jumbo = pd.read_csv(f"../../scrappers/jumbo/results/{actual}.csv")
-df_santaisabel = pd.read_csv(f"../../scrappers/santaisabel/results/{actual}.csv")
-df_unimarc = pd.read_csv(f"../../scrappers/unimarc/results/{actual}.csv")
+date_list = [(start_date + timedelta(days=i)).strftime("%d-%m-%Y") 
+             for i in range((end_date - start_date).days + 1)]
 
-supermercados = {
-    "acuenta": df_acuenta,
-    "eltit": df_eltit,
-    "eltrebol": df_eltrebol,
-    "jumbo": df_jumbo,
-    "santaisabel": df_santaisabel,
-    "unimarc": df_unimarc
-}
+for actual in date_list:
+    df_acuenta = pd.read_csv(f"../../scrappers/acuenta/results/{actual}.csv")
+    df_eltit = pd.read_csv(f"../../scrappers/eltit/results/{actual}.csv")
+    df_eltrebol = pd.read_csv(f"../../scrappers/eltrebol/results/{actual}.csv")
+    df_jumbo = pd.read_csv(f"../../scrappers/jumbo/results/{actual}.csv")
+    df_santaisabel = pd.read_csv(f"../../scrappers/santaisabel/results/{actual}.csv")
+    df_unimarc = pd.read_csv(f"../../scrappers/unimarc/results/{actual}.csv")
 
-for df in supermercados.values():
-    df["capacity_num"], df["capacity_unit"] = zip(*df["found"].apply(extract_capacity))
-    df["normalized"] = df["found"].apply(normalize_text)
-    df['price'] = df['price'].apply(parse_price)
-    df['pre_discount'] = df['pre_discount'].apply(parse_price)
-
-max_df_name, max_df = max(supermercados.items(), key=lambda x: len(x[1]))
-matches = []
-
-for idx, row in max_df.iterrows():
-    no_matches = False
-    matched_products = {
-        "acuenta": (row["found"], row["price"], row["pre_discount"]),
-        "eltit": (None, None, None),
-        "eltrebol": (None, None, None),
-        "jumbo": (None, None, None),
-        "santaisabel": (None, None, None),
-        "unimarc": (None, None, None)
+    supermercados = {
+        "acuenta": df_acuenta,
+        "eltit": df_eltit,
+        "eltrebol": df_eltrebol,
+        "jumbo": df_jumbo,
+        "santaisabel": df_santaisabel,
+        "unimarc": df_unimarc
     }
 
-    for df_name, current_df in supermercados.items():
-        if max_df_name == df_name: continue
+    for df in supermercados.values():
+        df["capacity_num"], df["capacity_unit"] = zip(*df["found"].apply(extract_capacity))
+        df["normalized"] = df["found"].apply(normalize_text)
+        df['price'] = df['price'].apply(parse_price)
+        df['pre_discount'] = df['pre_discount'].apply(parse_price)
 
-        matched_product, score, matched_idx = get_best_match(row, current_df)
+    max_df_name, max_df = max(supermercados.items(), key=lambda x: len(x[1]))
+    matches = []
 
-        if matched_product:
-            matched_products[df_name] = (matched_product, current_df.loc[matched_idx, "price"], current_df.loc[matched_idx, "pre_discount"])
-        else:
-            no_matches = True
+    for idx, row in max_df.iterrows():
+        no_matches = False
+        matched_products = {
+            "acuenta": (row["found"], row["price"], row["pre_discount"]),
+            "eltit": (None, None, None),
+            "eltrebol": (None, None, None),
+            "jumbo": (None, None, None),
+            "santaisabel": (None, None, None),
+            "unimarc": (None, None, None)
+        }
 
-    if no_matches: continue
+        for df_name, current_df in supermercados.items():
+            if max_df_name == df_name: continue
 
-    matches.append({
-        "search": row["search"],
-        "acuenta": matched_products["acuenta"][0],
-        "eltit": matched_products["eltit"][0],
-        "eltrebol": matched_products["eltrebol"][0],
-        "jumbo": matched_products["jumbo"][0],
-        "santaisabel": matched_products["santaisabel"][0],
-        "unimarc": matched_products["unimarc"][0],
-        "price_acuenta": matched_products["acuenta"][1],
-        "pre_discount_acuenta": matched_products["acuenta"][2],
-        "price_eltit": matched_products["eltit"][1],
-        "pre_discount_eltit": matched_products["eltit"][2],
-        "price_eltrebol": matched_products["eltrebol"][1],
-        "pre_discount_eltrebol": matched_products["eltrebol"][2],
-        "price_jumbo": matched_products["jumbo"][1],
-        "pre_discount_jumbo": matched_products["jumbo"][2],
-        "price_santaisabel": matched_products["santaisabel"][1],
-        "pre_discount_santaisabel": matched_products["santaisabel"][2],
-        "price_unimarc": matched_products["unimarc"][1],
-        "pre_discount_unimarc": matched_products["unimarc"][2]
-    })
+            matched_product, score, matched_idx = get_best_match(row, current_df)
+
+            if matched_product:
+                matched_products[df_name] = (matched_product, current_df.loc[matched_idx, "price"], current_df.loc[matched_idx, "pre_discount"])
+            else:
+                no_matches = True
+
+        if no_matches: continue
+
+        matches.append({
+            "search": row["search"],
+            "acuenta": matched_products["acuenta"][0],
+            "eltit": matched_products["eltit"][0],
+            "eltrebol": matched_products["eltrebol"][0],
+            "jumbo": matched_products["jumbo"][0],
+            "santaisabel": matched_products["santaisabel"][0],
+            "unimarc": matched_products["unimarc"][0],
+            "price_acuenta": matched_products["acuenta"][1],
+            "pre_discount_acuenta": matched_products["acuenta"][2],
+            "price_eltit": matched_products["eltit"][1],
+            "pre_discount_eltit": matched_products["eltit"][2],
+            "price_eltrebol": matched_products["eltrebol"][1],
+            "pre_discount_eltrebol": matched_products["eltrebol"][2],
+            "price_jumbo": matched_products["jumbo"][1],
+            "pre_discount_jumbo": matched_products["jumbo"][2],
+            "price_santaisabel": matched_products["santaisabel"][1],
+            "pre_discount_santaisabel": matched_products["santaisabel"][2],
+            "price_unimarc": matched_products["unimarc"][1],
+            "pre_discount_unimarc": matched_products["unimarc"][2]
+        })
 
 
-df_matches = pd.DataFrame(matches)
-df_matches.to_csv(f"results/{actual}.csv", index=False)
+    df_matches = pd.DataFrame(matches)
+    df_matches.to_csv(f"results/{actual}.csv", index=False)
 
-print(df_matches)
+
+print(f"Se han guardado los registros de productos comunes entre {start_date} y {end_date}.")
