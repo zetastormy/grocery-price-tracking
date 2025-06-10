@@ -22,7 +22,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 archivo_salida = os.path.join(BASE_DIR, f"results/{actual}.csv")
 search_file_path = os.path.join(BASE_DIR, "search_list.txt")
 
-with open(archivo_salida, "w", encoding="utf-8") as archivo:
+with open(archivo_salida, "w", encoding="utf-8") as salida:
     with open(search_file_path, "r", encoding="utf-8") as lista:
         writer = csv.writer(salida)
         writer.writerow(["search","found", "price","pre_discount"])

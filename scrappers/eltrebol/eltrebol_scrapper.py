@@ -27,23 +27,26 @@ with open(result_path, "w", newline = "", encoding = "utf-8") as csvfile:
     for search in search_file:
         search = search.strip()
         driver.get("https://www.supertrebol.cl/search?q=" + search)
+        
+        try:
+            ul_productos = driver.find_element(By.CSS_SELECTOR, 'ul.products')
+            productos_li = ul_productos.find_elements(By.TAG_NAME, 'li')
 
-        ul_productos = driver.find_element(By.CSS_SELECTOR, 'ul.products')
-        productos_li = ul_productos.find_elements(By.TAG_NAME, 'li')
+            for producto in productos_li:
+                nombre = producto.find_element(By.CSS_SELECTOR, ".marca a").text + " " + producto.find_element(By.CSS_SELECTOR, "h3.product-model a").text
+                precio_antes = producto.find_element(By.CLASS_NAME, "bootic-price-comparison").text.replace('$', '').replace('.', '')
+                precio_actual = producto.find_element(By.CLASS_NAME, "bootic-price").text.replace('$', '').replace('.', '')
 
-        for producto in productos_li:
-            nombre = producto.find_element(By.CSS_SELECTOR, ".marca a").text + " " + producto.find_element(By.CSS_SELECTOR, "h3.product-model a").text
-            precio_antes = producto.find_element(By.CLASS_NAME, "bootic-price-comparison").text.replace('$', '').replace('.', '')
-            precio_actual = producto.find_element(By.CLASS_NAME, "bootic-price").text.replace('$', '').replace('.', '')
+                if (precio_antes == ""): precio_antes = precio_actual
 
-            if (precio_antes == ""): precio_antes = precio_actual
+                print(f"Búsqueda: {search}")
+                print(f"Encontrado: {nombre}")
+                print(f"Precio anterior: {precio_antes}")
+                print(f"Precio actual: {precio_actual}\n")
 
-            print(f"Búsqueda: {search}")
-            print(f"Encontrado: {nombre}")
-            print(f"Precio anterior: {precio_antes}")
-            print(f"Precio actual: {precio_actual}\n")
-
-            writer.writerow([search, nombre, precio_actual, precio_antes])
+                writer.writerow([search, nombre, precio_actual, precio_antes])
+        except:
+            print(f"No se pudo encontrar el producto {search}")
 
         time.sleep(3)
 

@@ -33,21 +33,19 @@ with open(archivo_salida, "w", encoding="utf-8") as archivo:
                 driver.get(url)
 
                 try:
-                    # Esperar hasta que aparezcan contenedores de productos
-                    
-                    contenedores = WebDriverWait(driver, 20).until(EC.presence_of_all_elements_located((By.CLASS_NAME,"product-card")))
+                    contenedores = WebDriverWait(driver, 20).until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, "div[data-cnstrc-item-name]")))
                     if not contenedores:
                         raise Exception("No se encontraron contenedores")
 
                     for contenedor in contenedores:
-                        marca_elemento = contenedor.find_element(By.CSS_SELECTOR, ".product-card .product-card-brand").text
-                        nombre_elemento = contenedor.find_element(By.CLASS_NAME, "product-card-name")
-                        nombre_producto = f"{marca_elemento} {nombre_elemento.text}"
-                        precio_elemento = contenedor.find_element(By.CLASS_NAME, "prices-main-price").text
+                        marca_elemento = contenedor.find_element(By.CSS_SELECTOR, "p.text-sm.text-gray-500").text
+                        nombre_elemento = contenedor.get_attribute("data-cnstrc-item-name").strip()
+                        nombre_producto = f"{marca_elemento} {nombre_elemento}"
+                        precio_elemento = contenedor.find_element(By.CSS_SELECTOR, "span.text-lg.font-bold.text-gray-800").text
                         precio_elemento = precio_elemento.replace("$", "")
                         precio_elemento = precio_elemento.replace(".", "")
                         try:
-                            old_price = contenedor.find_element(By.CLASS_NAME, "prices-old-price").text
+                            old_price = contenedor.find_element(By.CSS_SELECTOR, "span.line-through").text
                             old_price=old_price.replace(".", "")
                             old_price=old_price.replace("$","")
                         except:
@@ -58,6 +56,7 @@ with open(archivo_salida, "w", encoding="utf-8") as archivo:
 
                 except Exception as e:
                     print(f" No se encontró información para {producto}")
+                    print(e)
                 time.sleep(2)
 
 driver.quit()

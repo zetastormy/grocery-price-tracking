@@ -15,7 +15,7 @@ sopa pollo
 vacuno
 filetitos
 avena
-pan blanco
+pan
 jurel 
 café 
 té 
