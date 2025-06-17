@@ -143,8 +143,9 @@ if st_data and st_data.get("last_object_clicked"):
 # ---- Cargar el CSV con las distancias desde la ruta específica ----
 @st.cache_data
 def load_distances():
-    # Ruta completa al archivo CSV
-    csv_path = Path(r"C:\Users\LUCIANA PC\Documents\Estudio Uni\5to Semestre\Python Cientifico\grocery-price-tracking\utils\distance-to-nearest-supermarket\all_distances_complete.csv")
+    # Asume que el CSV está en una subcarpeta 'data' dentro del proyecto
+    current_dir = Path(__file__).parent  # Carpeta donde está este script
+    csv_path = current_dir / "utils" / "distance-to-nearest-supermarket" / "all_distances_complete.csv"
     return pd.read_csv(csv_path)
 
 distances_df = load_distances()
@@ -218,4 +219,3 @@ if not st.session_state.get('reset_triggered', False):
 if st.session_state.get('reset_triggered', False):
     st.session_state.reset_triggered = False
     st.experimental_rerun()
-
