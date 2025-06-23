@@ -133,8 +133,8 @@ def get_best_match(row, target_df, threshold=68):
 
     return match_row["found"], match_score, match_idx
 
-start_date = datetime.strptime("14-06-2025", "%d-%m-%Y")
-end_date = datetime.strptime("15-06-2025", "%d-%m-%Y")
+start_date = datetime.strptime("04-06-2025", "%d-%m-%Y")
+end_date = datetime.strptime("04-06-2025", "%d-%m-%Y")
 
 date_list = [(start_date + timedelta(days=i)).strftime("%d-%m-%Y") 
              for i in range((end_date - start_date).days + 1)]

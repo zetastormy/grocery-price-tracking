@@ -50,7 +50,7 @@ print("---------------------------------")
 
 total_product_amount_filtered = 0
 
-for child in Path(f'./filters/common-products-filter/results/').iterdir():
+for child in Path(f'./utils/common-products-filter/results/').iterdir():
     data = pd.read_csv(child)
     date = datetime.strptime(child.name.replace(".csv", ""), "%d-%m-%Y").date()
     data_amount = len(data["search"])
